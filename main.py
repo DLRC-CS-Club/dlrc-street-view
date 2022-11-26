@@ -1,9 +1,11 @@
 import pyqrcode
-import png
-from pyqrcode import QRCode
-import csv
+import pandas as pd
 
-url = "https://www.apple.com/"
-qr = pyqrcode.create(url)
+DF = pd.read_csv("images.csv")
 
-qr.png("myqr.png")
+for i in range(len(DF)):
+    link = DF["link"][i]
+    space = DF["class"][i]
+    loca = DF["location"][i]
+    qr = pyqrcode.create(link)
+    qr.png(f"{space}_{loca}.png")
