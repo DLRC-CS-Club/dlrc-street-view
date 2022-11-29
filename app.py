@@ -8,11 +8,10 @@ def main(page: ft.Page):
     """flet app"""
     page.title = "QR Generator"
     appbar = ft.AppBar(title=ft.Text("QR Generator", style="headlineMedium"), center_title=True)
-    page.add(appbar)
     page.window_width, page.window_height = 360, 640
     PATH = None
 
-    def pick_files_result(e):
+    def pick_files_result(e: ft.FilePickerResultEvent):
         global PATH
         if e.files: PATH = ", ".join(map(lambda f: f.path, e.files))
         print(f"path:{PATH}")
@@ -31,6 +30,7 @@ def main(page: ft.Page):
     page.overlay.append(pick_files_dialog)
 
     page.add(
+        appbar,
         ft.Divider(),
         ft.Column([pick_files, generate_qr])
     )
