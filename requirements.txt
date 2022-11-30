@@ -1,6 +1,5 @@
 flet==0.2.2
 pandas==1.5.2
-Pillow==9.3.0
+pdfkit==1.0.0
 pypng==0.20220715.0
 PyQRCode==1.2.1
-pdfkit

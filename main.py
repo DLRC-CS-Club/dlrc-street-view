@@ -1,23 +1,24 @@
-import pyqrcode
+#!/usr/bin/env python3
+# pylint: skip-file
+
 import pandas as pd
 import pdfkit
+import pyqrcode
 
-codes = []
+df = pd.read_csv("images.csv")
+data = []
 
-DF = pd.read_csv("images.csv")
+for i, row in df.iterrows():
+    qr = pyqrcode.create(row["link"], error="M")
+    data.append({
+        "location": row["location"],
+        "lesson": row["lesson"],
+        "data": qr.png_as_base64_str()})
 
-for _, row in DF.iterrows():
-    qr = pyqrcode.create(row["link"], error='M')
-    codes.append({'location': row["location"],
-                  'lesson': row["lesson"],
-                  'data': qr.png_as_base64_str()})
+with open(r".\\template.html") as f:
+    template = f.read()
 
-html = ""
-with open("./template.html", 'r') as f:
-    html = f.read()
-    
-
-for code in codes:
-    html_formatted = html.format(location = code['location'], lesson = code['lesson'], data = code['data'])
-    pdfkit.from_string(html_formatted, f"./qrcodes/{code['location']}-{code['lesson']}.pdf")
-
+for code in data:
+    location, lesson, data = code["location"], code["lesson"], code["data"]
+    html = template.format(data, location, lesson)
+    pdfkit.from_string(html, f".\\qrcodes\\{location}-{lesson}.pdf")
