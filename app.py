@@ -12,24 +12,23 @@ def main(page: ft.Page):
     page.title = "QR Generator"
     appbar = ft.AppBar(title=ft.Text("QR Generator", style="headlineMedium"), center_title=True)
     page.window_width, page.window_height = 360, 640
-    PATH = None
 
     def pick_files_result(e: ft.FilePickerResultEvent):
         global PATH
         if e.files: PATH = ", ".join(map(lambda f: f.path, e.files))
         print(f"path:{PATH}")
 
-    def generate(e):
-        # code goes here
-        with open("./template.html", 'r') as f:
-            HTML_DATA = f.read()
 
-        DF = pd.read_csv(PATH)
+    def generate(e):
+        with open(PATH, "r") as f:
+            TEMPLATE = f.read()
+
+        DF = pd.read_csv("./images.csv")
 
         for i, row in DF.iterrows():
             QR = pyqrcode.create(row["link"], error="M")
-            pdf_data = HTML_DATA.format(QR.png_as_base64_str(), row["location"], row["lesson"])
-            pdfkit.from_string(pdf_data, f"./qrcodes/{row['location']}{row['lesson']}.pdf")
+            pdf_data = TEMPLATE.format(QR.png_as_base64_str(), row["location"], row["lesson"])
+            pdfkit.from_string(pdf_data, f"./qrcodes/{row['location']} {row['lesson']}.pdf")
     
        
 
