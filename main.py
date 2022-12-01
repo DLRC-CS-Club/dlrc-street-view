@@ -5,20 +5,14 @@ import pandas as pd
 import pdfkit
 import pyqrcode
 
-df = pd.read_csv("images.csv")
-data = []
+with open("./template.html", 'r') as f:
+    HTML_DATA = f.read()
 
-for i, row in df.iterrows():
-    qr = pyqrcode.create(row["link"], error="M")
-    data.append({
-        "location": row["location"],
-        "lesson": row["lesson"],
-        "data": qr.png_as_base64_str()})
+DF = pd.read_csv("./images.csv")
 
-with open(r".\\template.html") as f:
-    template = f.read()
-
-for code in data:
-    location, lesson, data = code["location"], code["lesson"], code["data"]
-    html = template.format(data, location, lesson)
-    pdfkit.from_string(html, f".\\qrcodes\\{location}-{lesson}.pdf")
+for i, row in DF.iterrows():
+    QR = pyqrcode.create(row["link"], error="M")
+    pdf_data = HTML_DATA.format(QR.png_as_base64_str(), row["location"],
+                                row["lesson"])
+    pdfkit.from_string(pdf_data,
+                       f"./qrcodes/{row['location']} -{row['lesson']}.pdf")
