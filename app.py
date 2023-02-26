@@ -20,7 +20,7 @@ def main(page: ft.Page):
 
 
     def generate(e):
-        with open(PATH, "r") as f:
+        with open("./template.html", "r") as f:
             TEMPLATE = f.read()
 
         DF = pd.read_csv("./images.csv")
@@ -29,6 +29,8 @@ def main(page: ft.Page):
             QR = pyqrcode.create(row["link"], error="M")
             pdf_data = TEMPLATE.format(QR.png_as_base64_str(), row["location"], row["lesson"])
             pdfkit.from_string(pdf_data, f"./qrcodes/{row['location']} {row['lesson']}.pdf")
+            print(TEMPLATE)
+            print(pdf_data)
     
        
 
